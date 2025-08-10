@@ -5,6 +5,102 @@
     // ----- Year stamp in footer(s)
     qsa('#y').forEach(el => (el.textContent = new Date().getFullYear()));
 
+    // === Universal partials loader ===
+    async function loadPartials() {
+        const nodes = document.querySelectorAll('[data-include]');
+        if (!nodes.length) return;
+
+        await Promise.all([...nodes].map(async(el) => {
+            const url = el.getAttribute('data-include');
+            try {
+                const res = await fetch(url, { cache: 'no-cache' });
+                if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+                const html = await res.text();
+                // replace the placeholder with the fetched markup
+                const tmp = document.createElement('div');
+                tmp.innerHTML = html;
+                const fragment = document.createDocumentFragment();
+                while (tmp.firstChild) fragment.appendChild(tmp.firstChild);
+                el.replaceWith(fragment);
+            } catch (e) {
+                console.error('Include failed for', url, e);
+            }
+        }));
+
+        // Re-init nav after injection
+        initNavToggle();
+        initActiveNavHighlight();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadPartials, { once: true });
+    } else {
+        loadPartials();
+    }
+
+    // === Exposed inits (extracted from your existing script) ===
+    function initNavToggle() {
+        const btn = document.querySelector('.nav-toggle');
+        const nav = document.getElementById('primary-nav');
+        const overlay = document.querySelector('[data-nav-overlay]');
+        if (!btn || !nav) return;
+
+        const open = () => {
+            nav.classList.add('open');
+            btn.setAttribute('aria-expanded', 'true');
+            document.body.classList.add('nav-open');
+        };
+        const close = () => {
+            nav.classList.remove('open');
+            btn.setAttribute('aria-expanded', 'false');
+            document.body.classList.remove('nav-open');
+        };
+
+        btn.addEventListener('click', () =>
+            nav.classList.contains('open') ? close() : open()
+        );
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') close();
+        });
+        document.addEventListener('click', (e) => {
+            if (!nav.classList.contains('open')) return;
+            const within = e.target.closest('#primary-nav, .nav-toggle');
+            if (!within) close();
+        });
+        if (overlay) overlay.addEventListener('click', close);
+        nav.addEventListener('click', (e) => {
+            const a = e.target.closest('a');
+            if (!a) return;
+            if (getComputedStyle(btn).display !== 'none') close();
+        });
+    }
+
+    function initActiveNavHighlight() {
+        const normalize = (p) =>
+            (p || '/').toLowerCase()
+            .replace(/index\.html?$/i, '')
+            .replace(/\/+$/, '/') || '/';
+
+        const here = new URL(location.href);
+        const current = normalize(here.pathname);
+
+        document.querySelectorAll('.nav .active').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav a[href]').forEach(a => {
+            const raw = a.getAttribute('href');
+            if (!raw || /^(#|mailto:|tel|javascript:)/i.test(raw)) return;
+            let path;
+            try {
+                const url = new URL(raw, here);
+                if (url.origin !== here.origin) return; // external
+                path = normalize(url.pathname);
+            } catch { return; }
+            if (path === current || (path !== '/' && current.startsWith(path))) {
+                (a.closest('li') || a).classList.add('active');
+            }
+        });
+    }
+
+
     // ----- Mobile nav toggle (no framework)
     const header = qs('.site-header');
     const btn = qs('.nav-toggle');

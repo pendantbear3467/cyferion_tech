@@ -6,6 +6,31 @@ import fs from "node:fs";
 import path from "node:path";
 import helmet from "helmet";
 import morgan from "morgan";
+import express from 'express';
+import cors from 'cors';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(
+    import.meta.url));
+const app = express();
+
+app.use(cors()); // allow dashboard on 8080 to fetch
+
+// Adjust the path to wherever your generator writes the file:
+const STATUS_PATH = path.join(__dirname, '..', 'status.json'); // or path.join(__dirname, 'data', 'status.json')
+
+app.get('/api/status', async(req, res) => {
+    try {
+        const raw = await fs.readFile(STATUS_PATH, 'utf8');
+        res.json(JSON.parse(raw));
+    } catch (e) {
+        res.status(500).json({ error: 'status.json not available', detail: String(e) });
+    }
+});
+
+app.listen(3001, () => console.log('Status API on http://127.0.0.1:3001'));
 
 dotenv.config();
 
@@ -44,7 +69,6 @@ const stmts = {
     addEvent: db.prepare("insert into events (type, payload) values (?, ?)")
 };
 
-const app = express();
 app.disable("x-powered-by");
 app.use(helmet());
 app.use(cors());

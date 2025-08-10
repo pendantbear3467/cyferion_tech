@@ -14,61 +14,50 @@
 <body class="site">
     <canvas id="galaxy-bg" aria-hidden="true"></canvas>
 
-    <header class="site-header">
-        <div class="container header-row">
-            <a class="brand" href="index.html">Cyferion<span>Tech</span></a>
+    <div data-include="partials/nav.html"></div>
 
-            <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">
-        <span class="sr-only">Toggle navigation</span> ☰
-      </button>
+    <section class="section aurora">
+        <div class="container">
+            <h2 class="cosmic">Status Overview</h2>
+            <div class="cosmic-divider"></div>
+            <div class="card glass glow-border parallax">
 
-            <nav id="primary-nav" class="nav">
-                <ul>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="games.html">Games</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a class="btn" href="https://app.cyferion.tech">Enter App</a></li>
-                </ul>
-            </nav>
+                <!-- Main content -->
+                <main class="site-main ">
+                    <section class="hero ">
+                        <div class="container ">
+                            <h1>We build games, apps, and the systems that power them.</h1>
+                            <p>From prototype to production—clean code, Docker/Traefik/Cloudflare, and strong security.</p>
+                            <div class="cta ">
+                                <a class="btn primary " href="games.html ">See Projects</a>
+                                <a class="btn " href="https://app.cyferion.tech ">Enter App</a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="section ">
+                        <div class="container grid-2 ">
+                            <div>
+                                <h2>What we do</h2>
+                                <ul class="checklist ">
+                                    <li>Custom game & app development</li>
+                                    <li>APIs, databases, real-time services</li>
+                                    <li>DevOps with Docker & Traefik</li>
+                                    <li>Cloudflare + monitoring/observability</li>
+                                    <li>Security hardening & reviews</li>
+                                </ul>
+                            </div>
+                            <div class="card ">
+                                <h3>Have a build in mind?</h3>
+                                <p>We scope fast, iterate weekly, and ship reliable results.</p>
+                                <a class="btn primary " href="contact.html ">Get in touch</a>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
         </div>
-    </header>
-
-
-
-    <!-- Main content -->
-    <main class="site-main ">
-        <section class="hero ">
-            <div class="container ">
-                <h1>We build games, apps, and the systems that power them.</h1>
-                <p>From prototype to production—clean code, Docker/Traefik/Cloudflare, and strong security.</p>
-                <div class="cta ">
-                    <a class="btn primary " href="games.html ">See Projects</a>
-                    <a class="btn " href="https://app.cyferion.tech ">Enter App</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="section ">
-            <div class="container grid-2 ">
-                <div>
-                    <h2>What we do</h2>
-                    <ul class="checklist ">
-                        <li>Custom game & app development</li>
-                        <li>APIs, databases, real-time services</li>
-                        <li>DevOps with Docker & Traefik</li>
-                        <li>Cloudflare + monitoring/observability</li>
-                        <li>Security hardening & reviews</li>
-                    </ul>
-                </div>
-                <div class="card ">
-                    <h3>Have a build in mind?</h3>
-                    <p>We scope fast, iterate weekly, and ship reliable results.</p>
-                    <a class="btn primary " href="contact.html ">Get in touch</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
+    </section>
     <!-- Footer -->
     <footer class="site-footer ">
         <div class="container footer-row ">
