@@ -94,3 +94,89 @@
         setTimeout(() => el.classList.remove('show'), 2500);
     }
 })();
+
+// ---- Animated galaxy background ----
+(function galaxyBackground() {
+    const canvas = document.getElementById('galaxy-bg');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w = window.innerWidth,
+        h = window.innerHeight;
+    canvas.width = w;
+    canvas.height = h;
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+        w = window.innerWidth;
+        h = window.innerHeight;
+        canvas.width = w;
+        canvas.height = h;
+    });
+
+    // Generate "universes" (nebulae)
+    const universes = Array.from({ length: 6 }, (_, i) => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: 120 + Math.random() * 180,
+        color: `hsla(${Math.random() * 360}, 70%, 60%, 0.18)`,
+        dx: (Math.random() - 0.5) * 0.3,
+        dy: (Math.random() - 0.5) * 0.3,
+        dr: (Math.random() - 0.5) * 0.2
+    }));
+
+    // Generate stars
+    const stars = Array.from({ length: 180 }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.2 + 0.3,
+        tw: Math.random() * Math.PI * 2,
+        speed: 0.008 + Math.random() * 0.012
+    }));
+
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+
+        // Draw universes (nebulae)
+        universes.forEach(u => {
+            ctx.save();
+            ctx.globalAlpha = 0.7;
+            ctx.beginPath();
+            ctx.arc(u.x, u.y, u.r, 0, Math.PI * 2);
+            ctx.fillStyle = u.color;
+            ctx.shadowColor = u.color;
+            ctx.shadowBlur = 80;
+            ctx.fill();
+            ctx.restore();
+
+            // Animate
+            u.x += u.dx;
+            u.y += u.dy;
+            u.r += u.dr;
+            if (u.x < -u.r) u.x = w + u.r;
+            if (u.x > w + u.r) u.x = -u.r;
+            if (u.y < -u.r) u.y = h + u.r;
+            if (u.y > h + u.r) u.y = -u.r;
+            if (u.r < 100) u.dr = Math.abs(u.dr);
+            if (u.r > 300) u.dr = -Math.abs(u.dr);
+        });
+
+        // Draw stars
+        stars.forEach(s => {
+            ctx.save();
+            ctx.globalAlpha = 0.8 + Math.sin(s.tw) * 0.2;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = '#fff';
+            ctx.shadowColor = '#fff';
+            ctx.shadowBlur = 12;
+            ctx.fill();
+            ctx.restore();
+
+            // Twinkle
+            s.tw += s.speed;
+        });
+
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();

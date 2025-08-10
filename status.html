@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cyferion Status — Live Service Health</title>
+    <meta name="description" content="Public status dashboard for Cyferion services: uptime, latency, and incident history." />
+    <!-- Configure where the page fetches status JSON from (relative or absolute) -->
+    <meta name="status-url" content="/status.json" />
+
+    <style>
+        /* ====== Minimal, self-contained styling (can be moved into styles.css) ====== */
+        
+         :root {
+            --bg: #0b0f14;
+            --bg-2: #0f151c;
+            --bg-3: #121b24;
+            --text: #e8f0fa;
+            --muted: #9fb1c4;
+            --border: #1a2733;
+            --ok: #22d1aa;
+            --warn: #ffd166;
+            --err: #ff6b6b;
+            --brand: #48a3ff;
+            --shadow: 0 10px 30px rgba(0, 0, 0, .28);
+            --radius: 16px;
+            --gap: 1rem;
+            --max: 1120px;
+        }
+        
+        * {
+            box-sizing: border-box
+        }
+        
+        html,
+        body {
+            margin: 0
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+            color: var(--text);
+            background: linear-gradient(180deg, var(--bg), #081018 55%, #061018);
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        a {
+            color: var(--brand);
+            text-decoration: none
+        }
+        
+        a:hover {
+            text-decoration: underline
+        }
+        
+        .container {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding: 0 1rem
+        }
+        
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(10, 14, 20, .75);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .head-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 64px
+        }
+        
+        .brand {
+            font-weight: 800;
+            letter-spacing: .2px;
+            color: var(--text)
+        }
+        
+        .brand span {
+            color: var(--brand)
+        }
+        
+        nav a {
+            color: var(--text);
+            opacity: .9;
+            margin-left: 1rem
+        }
+        
+        nav a:hover {
+            opacity: 1
+        }
+        
+        main {
+            flex: 1;
+            padding: 2rem 0
+        }
+        /* Overall banner */
+        
+        .banner {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: linear-gradient(180deg, var(--bg-2), var(--bg-3));
+            box-shadow: var(--shadow);
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.25rem 0;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%
+        }
+        
+        .dot.ok {
+            background: var(--ok)
+        }
+        
+        .dot.warn {
+            background: var(--warn)
+        }
+        
+        .dot.err {
+            background: var(--err)
+        }
+        
+        .banner h1 {
+            font-size: 1.2rem;
+            margin: .1rem 0
+        }
+        
+        .sub {
+            color: var(--muted);
+            font-size: .95rem
+        }
+        /* Grid of services */
+        
+        .grid {
+            display: grid;
+            gap: var(--gap);
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        
+        @media (max-width: 1000px) {
+            .grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .grid {
+                grid-template-columns: 1fr
+            }
+        }
+        
+        .card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            background: linear-gradient(180deg, var(--bg-2), var(--bg-3));
+            box-shadow: var(--shadow)
+        }
+        
+        .card h3 {
+            margin: .2rem 0 .4rem
+        }
+        
+        .muted {
+            color: var(--muted)
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .25rem .6rem;
+            border-radius: 999px;
+            font-size: .85rem;
+            border: 1px solid var(--border)
+        }
+        
+        .badge.ok {
+            background: rgba(34, 209, 170, .12);
+            color: var(--ok);
+            border-color: rgba(34, 209, 170, .35)
+        }
+        
+        .badge.warn {
+            background: rgba(255, 209, 102, .12);
+            color: #ffe2a1;
+            border-color: rgba(255, 209, 102, .35)
+        }
+        
+        .badge.err {
+            background: rgba(255, 107, 107, .12);
+            color: #ffc1c1;
+            border-color: rgba(255, 107, 107, .35)
+        }
+        
+        .kv {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center
+        }
+        
+        .kv .k {
+            color: var(--muted)
+        }
+        
+        .kv .v {
+            font-weight: 600
+        }
+        
+        .spark {
+            width: 100%;
+            height: 54px;
+            display: block;
+            margin-top: .6rem
+        }
+        /* Incidents */
+        
+        .incidents {
+            margin-top: 2rem
+        }
+        
+        .incidents h2 {
+            margin: .2rem 0 1rem
+        }
+        
+        .incident {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            background: linear-gradient(180deg, var(--bg-2), var(--bg-3));
+            margin: .75rem 0
+        }
+        
+        .incident .row {
+            display: flex;
+            gap: .75rem;
+            align-items: center;
+            flex-wrap: wrap
+        }
+        
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: .15rem .5rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            font-size: .8rem;
+        }
+        
+        .tag.major {
+            color: #ffdada;
+            background: rgba(255, 107, 107, .15);
+            border-color: rgba(255, 107, 107, .35)
+        }
+        
+        .tag.minor {
+            color: #fff0c7;
+            background: rgba(255, 209, 102, .15);
+            border-color: rgba(255, 209, 102, .35)
+        }
+        
+        .inc-desc {
+            color: var(--muted);
+            margin: .5rem 0 0
+        }
+        
+        footer {
+            border-top: 1px solid var(--border);
+            background: rgba(10, 14, 20, .75)
+        }
+        
+        .foot-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 70px
+        }
+        
+        .small {
+            font-size: .9rem
+        }
+        
+        .hint {
+            color: var(--muted);
+            font-size: .9rem
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: .5rem .8rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            text-decoration: none;
+            background: linear-gradient(180deg, var(--bg-2), var(--bg-3))
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container head-row">
+            <a class="brand" href="/">Cyferion<span>Tech</span></a>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/games.html">Games</a>
+                <a href="/contact.html">Contact</a>
+                <a class="btn" href="https://app.cyferion.tech">Enter App</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Overall banner -->
+            <section class="banner" id="overall">
+                <div class="dot" id="overallDot"></div>
+                <div>
+                    <h1 id="overallText">Loading status…</h1>
+                    <div class="sub"><span id="updated"></span> · <span id="refresh"></span></div>
+                </div>
+            </section>
+
+            <!-- Services grid -->
+            <section>
+                <div class="grid" id="services"></div>
+                <p class="hint" id="demoHint" style="display:none;margin-top:.75rem">Showing demo data. Add <code>status.json</code> on your server to display live stats.</p>
+            </section>
+
+            <!-- Incidents -->
+            <section class="incidents">
+                <h2>Incidents</h2>
+                <div id="incidents"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container foot-row">
+            <p>© <span id="y"></span> Cyferion Tech</p>
+            <nav>
+                <a href="mailto:dariuspal28@gmail.com">Report an Issue</a>
+                <a href="/">Status Home</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script>
+        // ====== Simple, dependency-free dashboard logic ======
+        const YEAR_EL = document.getElementById('y');
+        YEAR_EL.textContent = new Date().getFullYear();
+
+        const STATUS_URL = document.querySelector('meta[name="status-url"]').content || 'status.json';
+        const POLL_MS = 30000; // 30s refresh
+
+        const el = sel => document.querySelector(sel);
+        const els = sel => [...document.querySelectorAll(sel)];
+
+        const $overallText = el('#overallText');
+        const $overallDot = el('#overallDot');
+        const $updated = el('#updated');
+        const $refresh = el('#refresh');
+        const $services = el('#services');
+        const $incidents = el('#incidents');
+        const $demoHint = el('#demoHint');
+
+        const state = {
+            timer: null
+        };
+
+        function cls(node, classes) {
+            node.className = classes;
+        }
+
+        function msToAgo(iso) {
+            if (!iso) return '—';
+            const then = new Date(iso).getTime();
+            const now = Date.now();
+            const s = Math.max(0, Math.round((now - then) / 1000));
+            if (s < 60) return s + "s ago";
+            const m = Math.round(s / 60);
+            if (m < 60) return m + "m ago";
+            const h = Math.round(m / 60);
+            if (h < 48) return h + "h ago";
+            const d = Math.round(h / 24);
+            return d + "d ago";
+        }
+
+        function computeOverall(services) {
+            const statuses = services.map(s => (s.status || '').toLowerCase());
+            if (statuses.includes('outage') || statuses.includes('down') || statuses.includes('major')) return 'outage';
+            if (statuses.includes('degraded') || statuses.includes('partial')) return 'degraded';
+            return 'operational';
+        }
+
+        function setBanner(status, updatedAt) {
+            const map = {
+                operational: ['All systems operational', 'ok'],
+                degraded: ['Partial degradation', 'warn'],
+                outage: ['Service outage', 'err']
+            };
+            const [text, clsKey] = map[status] || ['Status unknown', 'warn'];
+            $overallText.textContent = text;
+            cls($overallDot, `dot ${clsKey}`);
+            $updated.textContent = `Updated ${msToAgo(updatedAt)}`;
+        }
+
+        function serviceCard(s) {
+            const clsKey = (s.status || '').toLowerCase() === 'operational' ? 'ok' : ((s.status || '').toLowerCase() === 'degraded' ? 'warn' : 'err');
+            const lat = (s.latency_ms != null) ? `${s.latency_ms} ms` : '—';
+            const url = s.url ? `<a href="${s.url}" target="_blank" rel="noopener">${new URL(s.url).hostname}</a>` : '—';
+            const history = Array.isArray(s.history_ms) ? s.history_ms : [];
+            const id = `spark-${s.id||Math.random().toString(36).slice(2)}`;
+            return `
+        <article class="card">
+          <div class="kv" style="justify-content:space-between">
+            <h3>${s.name||'Service'}</h3>
+            <span class="badge ${clsKey}">${(s.status||'unknown').toUpperCase()}</span>
+          </div>
+          <div class="kv" style="margin-top:.4rem">
+            <div><span class="k">Endpoint:</span> <span class="v">${url}</span></div>
+            <div><span class="k">Latency:</span> <span class="v">${lat}</span></div>
+            <div><span class="k">Last check:</span> <span class="v">${msToAgo(s.checked_at)||'—'}</span></div>
+          </div>
+          <canvas class="spark" id="${id}" data-points='${JSON.stringify(history)}'></canvas>
+          ${s.notes ? `<p class="muted" style="margin:.5rem 0 0">${s.notes}</p>`:''}
+        </article>
+      `;
+    }
+
+    function drawSparkline(canvas){
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.clientWidth;
+      const h = canvas.height = canvas.clientHeight;
+      const points = JSON.parse(canvas.dataset.points||'[]');
+      if (!points.length){ ctx.clearRect(0,0,w,h); return; }
+      const max = Math.max(...points);
+      const min = Math.min(...points);
+      const pad = 6;
+      ctx.clearRect(0,0,w,h);
+      ctx.lineWidth = 2; ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--brand');
+      ctx.beginPath();
+      points.forEach((v,i)=>{
+        const x = pad + (i*(w-2*pad)/(points.length-1||1));
+        const y = h - pad - ((v - min) / (max - min || 1))*(h-2*pad);
+        if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+      // baseline (median-ish)
+      ctx.strokeStyle = 'rgba(255,255,255,.15)'; ctx.lineWidth = 1;
+      const mid = h/2; ctx.beginPath(); ctx.moveTo(pad, mid); ctx.lineTo(w-pad, mid); ctx.stroke();
+    }
+
+    function render(data){
+      const services = Array.isArray(data.services) ? data.services : [];
+      const incidents = Array.isArray(data.incidents) ? data.incidents : [];
+      const overall = computeOverall(services);
+      setBanner(overall, data.updated_at || new Date().toISOString());
+
+      $services.innerHTML = services.map(serviceCard).join('');
+      // Draw sparklines after DOM paint
+      requestAnimationFrame(()=>{
+        els('canvas.spark').forEach(drawSparkline);
+      });
+
+      if (!incidents.length){
+        $incidents.innerHTML = '<p class="muted">No incidents reported.</p>';
+      } else {
+        $incidents.innerHTML = incidents.map(inc=>{
+          const sev = (inc.severity||'minor').toLowerCase();
+          const status = (inc.status||'').toUpperCase() || 'OPEN';
+          return `
+            <div class="incident">
+              <div class="row">
+                <strong>${inc.title||'Incident'}</strong>
+                <span class="tag ${sev}">${sev}</span>
+                <span class="tag">${status}</span>
+                <span class="muted">Started ${msToAgo(inc.started_at)}</span>
+              </div>
+              ${inc.description ? `<p class="inc-desc">${inc.description}</p>`:''}
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function setRefreshTicker(ms){
+      if (state.timer) clearInterval(state.timer);
+      let left = Math.round(ms/1000);
+      $refresh.textContent = `Auto-refresh in ${left}s`;
+      state.timer = setInterval(()=>{
+        left--; if (left <= 0){ clearInterval(state.timer); load(); return; }
+        $refresh.textContent = `Auto-refresh in ${left}s`;
+      }, 1000);
+    }
+
+    async function load(){
+      // Cache-bust query param so CDNs/CF always fetch fresh JSON
+      const url = `${STATUS_URL}${STATUS_URL.includes('?')?'&':'?'}t=${Date.now()}`;
+      try {
+        const ac = new AbortController();
+        const id = setTimeout(()=>ac.abort(), 6000); // 6s timeout
+        const res = await fetch(url, {signal: ac.signal, cache:'no-store'});
+        clearTimeout(id);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        $demoHint.style.display = 'none';
+        render(data);
+      } catch (e){
+        // Fallback to built-in demo data so the page still renders nicely
+        console.warn('Using SAMPLE_DATA due to fetch error:', e?.message||e);
+        $demoHint.style.display = 'block';
+        render(SAMPLE_DATA);
+      } finally {
+        setRefreshTicker(POLL_MS);
+      }
+    }
+
+    // Kick off
+    load();
+
+    // ====== Demo data (remove once real /status.json is served) ======
+    const SAMPLE_DATA = {
+      updated_at: new Date().toISOString(),
+      services: [
+        { id:'site', name:'Cyferion Website', url:'https://cyferion.tech', status:'operational', latency_ms:42,  checked_at: new Date(Date.now()-45000).toISOString(), history_ms:[60,52,50,46,44,42,40,41,39,42] },
+        { id:'app',  name:'Main App',         url:'https://app.cyferion.tech', status:'degraded',    latency_ms:220, checked_at: new Date(Date.now()-30000).toISOString(), history_ms:[180,190,200,210,240,260,230,220,215,225], notes:'Elevated response times' },
+        { id:'graf', name:'Grafana (home)',   url:'https://grafana.cyferion.tech', status:'outage', latency_ms:null, checked_at: new Date(Date.now()-900000).toISOString(), history_ms:[], notes:'Home server offline (tunnel down)'}
+      ],
+      incidents: [
+        { id:'2025-08-09-home', title:'Home server offline', severity:'major', status:'investigating', started_at: new Date(Date.now()-86400000).toISOString(), description:'Power off while away; Cloudflare Tunnel down.' }
+      ]
+    };
+    </script>
+
+    <!--
+    ==========================================
+    STATUS JSON SHAPE (create /status.json)
+    ==========================================
+    {
+      "updated_at": "2025-08-10T20:00:00Z",
+      "services": [
+        { "id":"site",  "name":"Cyferion Website", "url":"https://cyferion.tech",        "status":"operational", "latency_ms": 42,  "checked_at":"2025-08-10T19:59:00Z", "history_ms":[60,52,50,46,44,42,40,41,39,42] },
+        { "id":"app",   "name":"Main App",         "url":"https://app.cyferion.tech",  "status":"degraded",    "latency_ms": 220, "checked_at":"2025-08-10T19:59:30Z", "history_ms":[180,190,200,210,240,260,230,220,215,225], "notes":"Elevated response times" },
+        { "id":"graf",  "name":"Grafana (home)",   "url":"https://grafana.cyferion.tech","status":"outage",      "latency_ms": null, "checked_at":"2025-08-10T18:00:00Z", "history_ms":[], "notes":"Home server offline (tunnel down)" }
+      ],
+      "incidents": [
+        { "id":"2025-08-09-home", "title":"Home server offline", "severity":"major", "status":"investigating", "started_at":"2025-08-09T14:22:00Z", "updated_at":"2025-08-09T15:00:00Z", "description":"Power off while away; Cloudflare Tunnel down." }
+      ]
+    }
+
+    Save that file as /srv/cyferion/site/status.json on your VPS (or anywhere) and set
+    <meta name="status-url" content="/status.json"> to point at it.
+
+    PRO TIP: You can generate status.json from Uptime Kuma or a tiny Node script
+    that pings your services and writes this structure every minute (cron/systemd).
+  -->
+</body>
+
+</html>

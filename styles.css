@@ -398,3 +398,14 @@ body.nav-open {
     opacity: 1;
     transform: translate(-50%, 0);
 }
+
+#galaxy-bg {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    display: block;
+    pointer-events: none;
+    background: transparent;
+}
