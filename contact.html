@@ -1,53 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyferion Tech</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="games.html" href="games.html">
-    <link rel="contact.html" href="contact.html ">
-    <link rel="about.html " href="about.html ">
-    <link rel="index.html" href="index.html">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contact — Cyferion Tech</title>
+    <link rel="icon" href="favicon.ico" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
 
-    <body style=" height: 100vh; display: flex; flex-direction: column; ">
-        <header>
-            <nav>
-                <ul style="display: flex; list-style-type: none; padding: 0; margin: 0; ">
-                    <li style="padding:1%"><a href="#about ">About Us</a></li>
-                    <li style="padding:1%"><a href="#games ">Services</a></li>
-                    <li style="padding:1%"><a href="#contact ">Contact</a></li>
+<body class="site">
+    <header class="site-header">
+        <div class="container header-row">
+            <a class="brand" href="/">Cyferion<span>Tech</span></a>
+            <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">☰</button>
+            <nav id="primary-nav" class="nav">
+                <ul>
+                    <li><a href="/about.html">About</a></li>
+                    <li><a href="/games.html">Games</a></li>
+                    <li class="active"><a href="/contact.html">Contact</a></li>
+                    <li><a class="btn" href="https://app.cyferion.tech">Enter App</a></li>
                 </ul>
             </nav>
-            <h1>Welcome to Cyferion Tech</h1>
-        </header>
+        </div>
+    </header>
 
-        <body>
-            <main>
-                <div class="contact-container">
-                    <section id="contact">
-                        <h2>Contact Us</h2>
-                        <form method="post" action="#">
-                            <label for="name">Name:</label>
-                            <input type="text" id="name" name="name" required autocomplete="name">
+    <main class="site-main section">
+        <div class="container">
+            <h1>Contact Us</h1>
+            <form class="contact-form" method="post" action="#">
+                <label>
+          <span>Name</span>
+          <input type="text" name="name" autocomplete="name" required />
+        </label>
+                <label>
+          <span>Email</span>
+          <input type="email" name="email" autocomplete="email" required />
+        </label>
+                <label class="full">
+          <span>Message</span>
+          <textarea name="message" rows="6" required></textarea>
+        </label>
+                <button class="btn primary" type="submit">Send</button>
+            </form>
+            <p class="muted">Prefer email? <a href="mailto:dariuspal28@gmail.com">dariuspal28@gmail.com</a></p>
+        </div>
+    </main>
 
-                            <label for="email">Email:</label>
-                            <input type="email" id="email" name="email" required autocomplete="email">
+    <footer class="site-footer">
+        <div class="container footer-row">
+            <p>© <span id="y"></span> Cyferion Tech</p>
+            <nav aria-label="Footer">
+                <a href="/">Home</a>
+                <a href="/about.html">About</a>
+                <a href="/games.html">Games</a>
+            </nav>
+        </div>
+    </footer>
 
-                            <label for="message">Message:</label>
-                            <textarea id="message" name="message" required autocomplete="off"></textarea>
+    <script>
+        document.getElementById('y').textContent = new Date().getFullYear();
+    </script>
+    <script defer src="script.js"></script>
 
-                            <button type="submit">Send</button>
-                        </form>
-                    </section>
-                </div>
-            </main>
-
-            <footer>
-                <p>&copy; 2023 Cyferion Tech. All rights reserved.</p>
-            </footer>
-        </body>
+</body>
 
 </html>

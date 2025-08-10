@@ -1,83 +1,101 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyferion Tech</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="games.html" href="games.html">
-    <link rel="contact.html" href="contact.html ">
-    <link rel="about.html " href="about.html ">
-    <link rel="index.html" href="index.html">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cyferion Tech — Build • Launch • Secure</title>
+    <meta name="description" content="Cyferion Tech builds games, apps, and infrastructure. Reliable engineering, modern ops, and fast delivery." />
+    <link rel="icon" href="favicon.ico" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
 
-    <body style=" height: 100vh; display: flex; flex-direction: column; ">
-        <header>
-            <nav>
-                <ul style="display: flex; list-style-type: none; padding: 0; margin: 0; ">
-                    <li style="padding:1%"><a href="#about ">About Us</a></li>
-                    <li style="padding:1%"><a href="#games ">Services</a></li>
-                    <li style="padding:1%"><a href="#contact ">Contact</a></li>
+<body class="site">
+    <!-- Header / Nav -->
+    <header class="site-header">
+        <div class="container header-row">
+            <a class="brand" href="/">Cyferion<span>Tech</span></a>
+
+            <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">
+        <span class="sr-only">Toggle navigation</span>
+        ☰
+      </button>
+
+            <nav id="primary-nav" class="nav">
+                <ul>
+                    <li><a href="/about.html">About</a></li>
+                    <li><a href="/games.html">Games</a></li>
+                    <li><a href="/contact.html">Contact</a></li>
+                    <li><a class="btn" href="https://app.cyferion.tech">Enter App</a></li>
                 </ul>
             </nav>
-            <h1>Welcome to Cyferion Tech</h1>
-        </header>
-
-        <main>
-            <section id="about ">
-                <h2>About Us</h2>
-                <p>At Cyferion Tech, we specialize in cutting-edge technology solutions for businesses and individuals. Our team is dedicated to innovation, reliability, and customer satisfaction.</p>
-            </section>
-
-            <div>
-                <section id="services ">
-                    <h2>Our Services</h2>
-                    <ul>
-                        <li>Custom Software Development</li>
-                        <li>Cloud Solutions</li>
-                        <li>IT Consulting</li>
-                        <li>Cybersecurity</li>
-                    </ul>
-                </section>
-            </div>
-
-
-
-
-
-        </main>
-
-        <div style="flex: 50%; padding: 1rem; margin: 20%; ">
-            <section id="contact ">
-                <h2>Contact Us</h2>
-                <form>
-                    <label for="name ">Name:</label>
-                    <input type="text " id="name " name="name " required>
-
-                    <label for="email ">Email:</label>
-                    <input type="email " id="email " name="email " required>
-
-                    <label for="message ">Message:</label>
-                    <textarea id="message " name="message " required></textarea>
-
-                    <button type="submit ">Send</button>
-                </form>
-            </section>
         </div>
+    </header>
 
+    <!-- Main content -->
+    <main class="site-main">
+        <section class="hero">
+            <div class="container">
+                <h1>We build games, apps, and the systems that power them.</h1>
+                <p>From prototype to production—clean code, Docker/Traefik/Cloudflare, and strong security.</p>
+                <div class="cta">
+                    <a class="btn primary" href="/games.html">See Projects</a>
+                    <a class="btn" href="https://app.cyferion.tech">Enter App</a>
+                </div>
+            </div>
+        </section>
 
+        <section class="section">
+            <div class="container grid-2">
+                <div>
+                    <h2>What we do</h2>
+                    <ul class="checklist">
+                        <li>Custom game & app development</li>
+                        <li>APIs, databases, real-time services</li>
+                        <li>DevOps with Docker & Traefik</li>
+                        <li>Cloudflare + monitoring/observability</li>
+                        <li>Security hardening & reviews</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Have a build in mind?</h3>
+                    <p>We scope fast, iterate weekly, and ship reliable results.</p>
+                    <a class="btn primary" href="/contact.html">Get in touch</a>
+                </div>
+            </div>
+        </section>
+    </main>
 
-        <footer>
-            <p>&copy; 2023 Cyferion Tech. All rights reserved.</p>
-        </footer>
-    </body>
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-row">
+            <p>© <span id="y"></span> Cyferion Tech</p>
+            <nav aria-label="Footer">
+                <a href="/about.html">About</a>
+                <a href="/games.html">Games</a>
+                <a href="/contact.html">Contact</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script>
+        // Stable frame helpers
+        document.getElementById('y').textContent = new Date().getFullYear();
+
+        // Mobile nav toggle (tiny, no frameworks)
+        const btn = document.querySelector('.nav-toggle');
+        const nav = document.getElementById('primary-nav');
+        btn.addEventListener('click', () => {
+            const open = btn.getAttribute('aria-expanded') === 'true';
+            btn.setAttribute('aria-expanded', String(!open));
+            nav.classList.toggle('open', !open);
+        });
+    </script>
+    <script defer src="script.js"></script>
+
+</body>
 
 </html>
-
-
-
-
 
 
 

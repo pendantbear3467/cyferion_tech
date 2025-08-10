@@ -1,25 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyferion Tech</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="games.html" href="games.html">
-    <link rel="contact.html" href="contact.html ">
-    <link rel="about.html " href="about.html ">
-    <link rel="index.html" href="index.html">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Games — Cyferion Tech</title>
+    <link rel="icon" href="favicon.ico" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
 
-    <body style=" height: 100vh; display: flex; flex-direction: column; ">
-        <header>
-            <nav>
-                <ul style="display: flex; list-style-type: none; padding: 0; margin: 0; ">
-                    <li style="padding:1%"><a href="#about ">About Us</a></li>
-                    <li style="padding:1%"><a href="#games ">Services</a></li>
-                    <li style="padding:1%"><a href="#contact ">Contact</a></li>
+<body class="site">
+    <header class="site-header">
+        <div class="container header-row">
+            <a class="brand" href="/">Cyferion<span>Tech</span></a>
+            <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">☰</button>
+            <nav id="primary-nav" class="nav">
+                <ul>
+                    <li><a href="/about.html">About</a></li>
+                    <li class="active"><a href="/games.html">Games</a></li>
+                    <li><a href="/contact.html">Contact</a></li>
+                    <li><a class="btn" href="https://app.cyferion.tech">Enter App</a></li>
                 </ul>
             </nav>
-            <h1>Welcome to Cyferion Tech</h1>
-        </header>
+        </div>
+    </header>
+
+    <main class="site-main section">
+        <div class="container">
+            <h1>Projects & Games</h1>
+            <div class="cards">
+                <article class="card">
+                    <h3>Aetheron Core</h3>
+                    <p>Mobile strategy—Bronze Age to space exploration. Progression, research trees, and story mode.</p>
+                    <a class="btn" href="https://aetheron.cyferion.tech">Visit</a>
+                </article>
+                <article class="card">
+                    <h3>Dashboard</h3>
+                    <p>Cyferion web panel & status (auth-gated).</p>
+                    <a class="btn" href="https://app.cyferion.tech">Open</a>
+                </article>
+                <!-- Add more cards easily later -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-row">
+            <p>© <span id="y"></span> Cyferion Tech</p>
+            <nav aria-label="Footer">
+                <a href="/">Home</a>
+                <a href="/about.html">About</a>
+                <a href="/contact.html">Contact</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('y').textContent = new Date().getFullYear();
+    </script>
+    <script defer src="script.js"></script>
+
+</body>
+
+</html>
