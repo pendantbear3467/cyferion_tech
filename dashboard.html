@@ -1,0 +1,132 @@
+<!-- Example: dashboard.html -->
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Cyferion Status Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>Service Status</h1>
+        <div id="services"></div>
+        <h2>Incidents</h2>
+        <table id="incidents">
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Title</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th>Started</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <h2>Users</h2>
+        <div id="users"></div>
+    </main>
+    <script>
+        async function fetchStatus() {
+            const res = await fetch('/api/status');
+            return res.json();
+        }
+        async function fetchUsers() {
+            const res = await fetch('/api/users');
+            return res.json();
+        }
+
+        function renderServices(services) {
+            const container = document.getElementById('services');
+            container.innerHTML = '';
+            services.forEach(svc => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+          <h3>${svc.name}</h3>
+          <p>Status: <strong>${svc.status}</strong></p>
+          <p>Latency: ${svc.latency_ms !== null ? svc.latency_ms + ' ms' : 'N/A'}</p>
+          <canvas id="chart-${svc.id}" width="200" height="60"></canvas>
+        `;
+                container.appendChild(card);
+                // Draw latency chart if history available
+                if (svc.history_ms && svc.history_ms.length) {
+                    new Chart(document.getElementById(`chart-${svc.id}`), {
+                        type: 'line',
+                        data: {
+                            labels: svc.history_ms.map((_, i) => i + 1),
+                            datasets: [{
+                                label: 'Latency (ms)',
+                                data: svc.history_ms,
+                                borderColor: '#48a3ff',
+                                fill: false,
+                                tension: 0.2
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    display: false
+                                },
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        function renderIncidents(incidents) {
+            const tbody = document.querySelector('#incidents tbody');
+            tbody.innerHTML = '';
+            incidents.forEach(inc => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+          <td>${inc.service_id}</td>
+          <td>${inc.title}</td>
+          <td>${inc.severity}</td>
+          <td>${inc.status}</td>
+          <td>${new Date(inc.started_at).toLocaleString()}</td>
+        `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderUsers(users) {
+            const container = document.getElementById('users');
+            container.innerHTML = '';
+            users.forEach(user => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+          <h3>${user.username}</h3>
+          <p>Email: ${user.email}</p>
+          <p>Last Seen: ${user.last_seen ? new Date(user.last_seen).toLocaleString() : 'Never'}</p>
+        `;
+                container.appendChild(card);
+            });
+        }
+        async function loadDashboard() {
+            const status = await fetchStatus();
+            renderServices(status.services);
+            renderIncidents(status.incidents);
+            const users = await fetchUsers();
+            renderUsers(users);
+        }
+        loadDashboard();
+        setInterval(loadDashboard, 60000); // Auto-refresh every minute
+    </script>
+</body>
+
+</html>
