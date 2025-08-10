@@ -1,19 +1,20 @@
 {
-  "updated_at": "2025-08-10T20:28:31.969Z",
+  "updated_at": "2025-08-10T20:33:28.177Z",
   "services": [
     {
       "id": "site",
       "name": "Cyferion Website",
       "url": "https://cyferion.tech",
       "status": "outage",
-      "latency_ms": 3363,
-      "checked_at": "2025-08-10T20:28:31.298Z",
+      "latency_ms": 270,
+      "checked_at": "2025-08-10T20:33:28.175Z",
       "history_ms": [
         2429,
         368,
         732,
         355,
-        3363
+        3363,
+        270
       ]
     },
     {
@@ -22,7 +23,7 @@
       "url": "https://app.cyferion.tech",
       "status": "outage",
       "latency_ms": null,
-      "checked_at": "2025-08-10T20:28:29.012Z",
+      "checked_at": "2025-08-10T20:33:28.013Z",
       "history_ms": []
     },
     {
@@ -30,14 +31,15 @@
       "name": "Grafana (home)",
       "url": "https://grafana.cyferion.tech",
       "status": "outage",
-      "latency_ms": 3988,
-      "checked_at": "2025-08-10T20:28:31.969Z",
+      "latency_ms": 226,
+      "checked_at": "2025-08-10T20:33:28.177Z",
       "history_ms": [
         2494,
         281,
         317,
         379,
-        3988
+        3988,
+        226
       ]
     }
   ],
