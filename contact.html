@@ -7,32 +7,47 @@
     <title>Cyferion Tech</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="styles.css">
-</head>
+    <link rel="games.html" href="games.html">
+    <link rel="contact.html" href="contact.html ">
+    <link rel="about.html " href="about.html ">
+    <link rel="index.html" href="index.html">
 
-<body>
-    <main>
-        <div class="contact-container">
-            <section id="contact">
-                <h2>Contact Us</h2>
-                <form method="post" action="#">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required autocomplete="name">
+    <body style=" height: 100vh; display: flex; flex-direction: column; ">
+        <header>
+            <nav>
+                <ul style="display: flex; list-style-type: none; padding: 0; margin: 0; ">
+                    <li style="padding:1%"><a href="#about ">About Us</a></li>
+                    <li style="padding:1%"><a href="#games ">Services</a></li>
+                    <li style="padding:1%"><a href="#contact ">Contact</a></li>
+                </ul>
+            </nav>
+            <h1>Welcome to Cyferion Tech</h1>
+        </header>
 
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required autocomplete="email">
+        <body>
+            <main>
+                <div class="contact-container">
+                    <section id="contact">
+                        <h2>Contact Us</h2>
+                        <form method="post" action="#">
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" name="name" required autocomplete="name">
 
-                    <label for="message">Message:</label>
-                    <textarea id="message" name="message" required autocomplete="off"></textarea>
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required autocomplete="email">
 
-                    <button type="submit">Send</button>
-                </form>
-            </section>
-        </div>
-    </main>
+                            <label for="message">Message:</label>
+                            <textarea id="message" name="message" required autocomplete="off"></textarea>
 
-    <footer>
-        <p>&copy; 2023 Cyferion Tech. All rights reserved.</p>
-    </footer>
-</body>
+                            <button type="submit">Send</button>
+                        </form>
+                    </section>
+                </div>
+            </main>
+
+            <footer>
+                <p>&copy; 2023 Cyferion Tech. All rights reserved.</p>
+            </footer>
+        </body>
 
 </html>
