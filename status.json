@@ -1,70 +1,88 @@
 {
-    "updated_at": "2025-08-10T20:33:28.177Z",
-    "services": [{
-            "id": "site",
-            "name": "Cyferion Website",
-            "url": "https://cyferion.tech",
-            "status": "outage",
-            "latency_ms": 270,
-            "checked_at": "2025-08-10T20:33:28.175Z",
-            "history_ms": [
-                2429,
-                368,
-                732,
-                355,
-                3363,
-                270
-            ]
-        },
-        {
-            "id": "app",
-            "name": "Main App",
-            "url": "https://app.cyferion.tech",
-            "status": "outage",
-            "latency_ms": null,
-            "checked_at": "2025-08-10T20:33:28.013Z",
-            "history_ms": []
-        },
-        {
-            "id": "graf",
-            "name": "Grafana (home)",
-            "url": "https://grafana.cyferion.tech",
-            "status": "outage",
-            "latency_ms": 226,
-            "checked_at": "2025-08-10T20:33:28.177Z",
-            "history_ms": [
-                2494,
-                281,
-                317,
-                379,
-                3988,
-                226
-            ]
-        }
-    ],
-    "incidents": [{
-            "id": "outage-site",
-            "title": "Cyferion Website outage",
-            "severity": "major",
-            "status": "open",
-            "started_at": "2025-08-10T20:13:28.285Z",
-            "description": "Automated check reports Cyferion Website unreachable."
-        },
-        {
-            "id": "outage-graf",
-            "title": "Grafana (home) outage",
-            "severity": "major",
-            "status": "open",
-            "started_at": "2025-08-10T20:13:28.244Z",
-            "description": "Automated check reports Grafana (home) unreachable."
-        },
-        {
-            "id": "outage-app",
-            "title": "Main App outage",
-            "severity": "major",
-            "status": "open",
-            "started_at": "2025-08-10T20:13:27.971Z",
-            "description": "Automated check reports Main App unreachable."
-        }
-    ]
+  "updated_at": "2025-08-10T21:03:28.467Z",
+  "services": [
+    {
+      "id": "site",
+      "name": "Cyferion Website",
+      "url": "https://cyferion.tech",
+      "status": "outage",
+      "latency_ms": 418,
+      "checked_at": "2025-08-10T21:03:28.360Z",
+      "history_ms": [
+        2429,
+        368,
+        732,
+        355,
+        3363,
+        270,
+        1271,
+        274,
+        378,
+        392,
+        263,
+        366,
+        404,
+        418
+      ]
+    },
+    {
+      "id": "app",
+      "name": "Main App",
+      "url": "https://app.cyferion.tech",
+      "status": "outage",
+      "latency_ms": null,
+      "checked_at": "2025-08-10T21:03:28.149Z",
+      "history_ms": []
+    },
+    {
+      "id": "graf",
+      "name": "Grafana (home)",
+      "url": "https://grafana.cyferion.tech",
+      "status": "outage",
+      "latency_ms": 478,
+      "checked_at": "2025-08-10T21:03:28.467Z",
+      "history_ms": [
+        2494,
+        281,
+        317,
+        379,
+        3988,
+        226,
+        1206,
+        244,
+        381,
+        423,
+        230,
+        278,
+        313,
+        478
+      ]
+    }
+  ],
+  "incidents": [
+    {
+      "id": "outage-site",
+      "title": "Cyferion Website outage",
+      "severity": "major",
+      "status": "open",
+      "started_at": "2025-08-10T20:13:28.285Z",
+      "description": "Automated check reports Cyferion Website unreachable."
+    },
+    {
+      "id": "outage-graf",
+      "title": "Grafana (home) outage",
+      "severity": "major",
+      "status": "open",
+      "started_at": "2025-08-10T20:13:28.244Z",
+      "description": "Automated check reports Grafana (home) unreachable."
+    },
+    {
+      "id": "outage-app",
+      "title": "Main App outage",
+      "severity": "major",
+      "status": "open",
+      "started_at": "2025-08-10T20:13:27.971Z",
+      "description": "Automated check reports Main App unreachable."
+    }
+  ]
 }

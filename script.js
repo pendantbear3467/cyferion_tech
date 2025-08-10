@@ -36,12 +36,81 @@
         links.forEach(a => a.addEventListener('click', close));
     }
 
-    // ----- Mark active link based on URL (works across pages)
-    const current = location.pathname.replace(/\/index\.html?$/i, '/');
-    qsa('.nav a[href]').forEach(a => {
-        const path = new URL(a.href).pathname.replace(/\/index\.html?$/i, '/');
-        if (path === current) a.parentElement ? .classList.add('active');
-    });
+    // = Active-Nav Highlighter (static or dynamic nav) =
+    (() => {
+        const SEL_LINKS = '.nav a[href]';
+
+        const normalize = (p) =>
+            (p || '/')
+            .toLowerCase()
+            .replace(/index\.html?$/i, '') // drop index.html/htm
+            .replace(/\/+$/, '/') // trim trailing slashes (keep root)
+            ||
+            '/';
+
+        const sameOriginPath = (href) => {
+            if (!href || /^(#|mailto:|tel:|javascript:)/i.test(href)) return null;
+            try {
+                const url = new URL(href, location.origin);
+                if (url.origin !== location.origin) return null; // external link
+                return normalize(url.pathname);
+            } catch {
+                return null;
+            }
+        };
+
+        const highlight = () => {
+            const current = normalize(location.pathname);
+            const links = document.querySelectorAll(SEL_LINKS);
+            if (!links.length) return;
+
+            // clear previous
+            links.forEach(a => (a.closest('li') || a).classList.remove('active'));
+
+            // apply
+            links.forEach(a => {
+                const path = sameOriginPath(a.getAttribute('href'));
+                if (!path) return;
+                if (current === path || (path !== '/' && current.startsWith(path))) {
+                    (a.closest('li') || a).classList.add('active');
+                }
+            });
+        };
+
+        // Debounce helper
+        const debounce = (fn, ms = 80) => {
+            let t;
+            return (...args) => {
+                clearTimeout(t);
+                t = setTimeout(() => fn(...args), ms);
+            };
+        };
+        const highlightDebounced = debounce(highlight, 80);
+
+        // Run when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', highlight, { once: true });
+        } else {
+            highlight();
+        }
+
+        // Re-run on route changes (SPA/back/forward/hash)
+        window.addEventListener('popstate', highlightDebounced);
+        window.addEventListener('hashchange', highlightDebounced);
+
+        // Re-run when nav/links are injected or changed
+        const mo = new MutationObserver(highlightDebounced);
+        mo.observe(document.documentElement, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['href']
+        });
+
+        // Optional: re-run after a short idle (covers late-injected templates)
+        setTimeout(highlightDebounced, 250);
+    })();
+
 
     // ----- Smooth scroll for same-page anchors (respects reduced motion)
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -66,7 +135,7 @@
         window.addEventListener('scroll', onScroll, { passive: true });
     }
 
-    // ----- Progressive contact form (only if no backend yet)
+    // ----- Progressive contact form 
     const form = qs('form.contact-form');
     if (form) {
         form.addEventListener('submit', async e => {
@@ -81,7 +150,7 @@
         });
     }
 
-    // ----- Tiny toast helper
+
     function toast(msg) {
         let el = qs('.toast');
         if (!el) {

@@ -538,7 +538,7 @@
     // Kick off
     load();
 
-    // ====== Demo data (remove once real /status.json is served) ======
+    
     const SAMPLE_DATA = {
       updated_at: new Date().toISOString(),
       services: [
@@ -552,28 +552,6 @@
     };
     </script>
 
-    <!--
-    ==========================================
-    STATUS JSON SHAPE (create /status.json)
-    ==========================================
-    {
-      "updated_at": "2025-08-10T20:00:00Z",
-      "services": [
-        { "id":"site",  "name":"Cyferion Website", "url":"https://cyferion.tech",        "status":"operational", "latency_ms": 42,  "checked_at":"2025-08-10T19:59:00Z", "history_ms":[60,52,50,46,44,42,40,41,39,42] },
-        { "id":"app",   "name":"Main App",         "url":"https://app.cyferion.tech",  "status":"degraded",    "latency_ms": 220, "checked_at":"2025-08-10T19:59:30Z", "history_ms":[180,190,200,210,240,260,230,220,215,225], "notes":"Elevated response times" },
-        { "id":"graf",  "name":"Grafana (home)",   "url":"https://grafana.cyferion.tech","status":"outage",      "latency_ms": null, "checked_at":"2025-08-10T18:00:00Z", "history_ms":[], "notes":"Home server offline (tunnel down)" }
-      ],
-      "incidents": [
-        { "id":"2025-08-09-home", "title":"Home server offline", "severity":"major", "status":"investigating", "started_at":"2025-08-09T14:22:00Z", "updated_at":"2025-08-09T15:00:00Z", "description":"Power off while away; Cloudflare Tunnel down." }
-      ]
-    }
-
-    Save that file as /srv/cyferion/site/status.json on your VPS (or anywhere) and set
-    <meta name="status-url" content="/status.json"> to point at it.
-
-    PRO TIP: You can generate status.json from Uptime Kuma or a tiny Node script
-    that pings your services and writes this structure every minute (cron/systemd).
-  -->
 </body>
 
 </html>

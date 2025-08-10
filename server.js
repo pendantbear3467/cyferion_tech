@@ -78,7 +78,7 @@ async function updateStatuses() {
         // Incident logic here (open/resolve based on status)
     }
 }
-setInterval(updateStatuses, 60 _000); // Every minute
+setInterval(updateStatuses, 60000); // Every minute
 
 // API endpoints
 app.get('/api/status', async(req, res) => {

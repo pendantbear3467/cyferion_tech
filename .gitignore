@@ -1,0 +1,23 @@
+# generated/status and logs
+status.json
+*.log
+*.tmp
+
+# deps & cache
+node_modules/
+dist/
+build/
+
+# env/keys
+.env
+.env.*
+*.pem
+*.key
+
+# system
+.DS_Store
+Thumbs.db
+
+git add .gitignore
+git commit -m "chore: add .gitignore and prep for public"
+git push
