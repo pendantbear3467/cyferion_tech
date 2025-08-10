@@ -1,0 +1,37 @@
+{
+  "updated_at": "2025-08-10T20:00:00.807Z",
+  "services": [
+    {
+      "id": "site",
+      "name": "Cyferion Website",
+      "url": "https://cyferion.tech",
+      "status": "outage",
+      "latency_ms": 300,
+      "checked_at": "2025-08-10T20:00:00.804Z",
+      "history_ms": [
+        300
+      ]
+    },
+    {
+      "id": "app",
+      "name": "Main App",
+      "url": "https://app.cyferion.tech",
+      "status": "outage",
+      "latency_ms": null,
+      "checked_at": "2025-08-10T20:00:00.555Z",
+      "history_ms": []
+    },
+    {
+      "id": "graf",
+      "name": "Grafana (home)",
+      "url": "https://grafana.cyferion.tech",
+      "status": "outage",
+      "latency_ms": 256,
+      "checked_at": "2025-08-10T20:00:00.807Z",
+      "history_ms": [
+        256
+      ]
+    }
+  ],
+  "incidents": []
+}
