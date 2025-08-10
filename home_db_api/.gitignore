@@ -1,0 +1,10 @@
+# env & secrets
+.env
+
+# sqlite db files
+/data/*.sqlite
+/data/*.sqlite-journal
+/data/*.db
+
+# logs
+*.log
